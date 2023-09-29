@@ -9,10 +9,12 @@ ENV NOMINATIM_VERSION=4.2.3
 ENV PROJECT_DIR ~/nominatim-planet
 ENV TREADS 4
 ENV OSMFILE = OSMFILE_ARG
+ENV IMPORTFILE = IMPORTFILE_ARG
 
 # Set arguments
 ARG USER_AGENT=mediagis/nominatim-docker:${NOMINATIM_VERSION}
 ARG OSMFILE_ARG=${PROJECT_DIR}/data.osm.pbf
+ARG IMPORTFILE_ARG
 
 
 # Install dependencies
@@ -93,12 +95,9 @@ RUN true \
 # Import nominatim database
 WORKDIR ${PROJECT_DIR}
 
-COPY  dest Copiar el archivo de los datos aquí, por ahora nosotros controlamos el archivo que se va a cargar forzando a
-descargalo de la web y meterlo en el repo. luego podemos incluir la opción de descargarlo.
+COPY ${IMPORTFILE} ${OSMFILE}
 
 RUN sudo -E -u nominatim nominatim import --osm-file ${OSMFILE} --threads $THREADS
-
-# Setup apache web server
 
 # Apache configuration
 COPY apache.conf /etc/apache2/sites-enabled/000-default.conf
